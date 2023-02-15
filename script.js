@@ -4,11 +4,7 @@ let events = localStorage.getItem("events")
   ? JSON.parse(localStorage.getItem("events"))
   : [];
 
-const calendar = document.getElementById("calendar");
-const newEventModal = document.getElementById("newEventModal");
-const deleteEventModal = document.getElementById("deleteEventModal");
-const backDrop = document.getElementById("modalBackDrop");
-const eventTitleInput = document.getElementById("eventTitleInput");
+const calendar = document.getElementById("hg-calendar");
 const weekdays = [
   "Sunday",
   "Monday",
@@ -19,20 +15,7 @@ const weekdays = [
   "Saturday",
 ];
 
-function openModal(date) {
-  clicked = date;
 
-  const eventForDay = events.find((e) => e.date === clicked);
-
-  if (eventForDay) {
-    document.getElementById("eventText").innerText = eventForDay.title;
-    deleteEventModal.style.display = "block";
-  } else {
-    newEventModal.style.display = "block";
-  }
-
-  backDrop.style.display = "block";
-}
 
 function load() {
   const dt = new Date();
@@ -47,6 +30,8 @@ function load() {
 
   const firstDayOfMonth = new Date(year, month, 1);
   const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const lasDayOfMonth = new Date(year, month + 1, 0);
+ 
 
   const dateString = firstDayOfMonth.toLocaleDateString("en-us", {
     weekday: "long",
@@ -55,11 +40,14 @@ function load() {
     day: "numeric",
   });
 
+  const lastDayOfMonthNumeric = lasDayOfMonth.toLocaleDateString("en-us", {
+    day: "numeric",
+  });
+
+  
   const paddingDaysStart = weekdays.indexOf(dateString.split(", ")[0]);
-  //const paddingDaysEnd = weekdays.indexOf(new Date(year, month + 1, 0).split(", ")[0]);
 
-  //console.log(paddingDaysEnd)
-
+  
   let lasDayOfReviousMonth = new Date(year, month, 0).getDate();
   document.getElementById("monthDisplay").innerText = `${dt.toLocaleDateString(
     "en-us",
@@ -68,68 +56,41 @@ function load() {
 
   calendar.innerHTML = "";
 
-  for (let i = 1; i <= paddingDaysStart + daysInMonth; i++) {
-    const daySquare = document.createElement("div");
-    daySquare.classList.add("day");
 
-    const dayString = `${month + 1}/${i - paddingDaysStart}/${year}`;
+  for (let i = 1; i <= 35; i++) {
+    const daySquare = document.createElement("div");
+    daySquare.classList.add("day", "d-flex", "flex-column", "justify-content-between", "m-1", "p-2", "cursor-pointer");
+  
 
     if (i > paddingDaysStart) {
       daySquare.innerText = i - paddingDaysStart;
-      const eventForDay = events.find((e) => e.date === dayString);
 
       if (i - paddingDaysStart === day && nav === 0) {
         daySquare.id = "currentDay";
       }
-
-      if (eventForDay) {
-        const eventDiv = document.createElement("div");
-        eventDiv.classList.add("event");
-        eventDiv.innerText = eventForDay.title;
-        daySquare.appendChild(eventDiv);
-      }
-
-      daySquare.addEventListener("click", () => openModal(dayString));
     } else {
-      daySquare.classList.add("padding");
+      daySquare.classList.add("padding", "text-muted");
       daySquare.innerText = lasDayOfReviousMonth - paddingDaysStart + i;
+    }
+    if(i > parseInt(lastDayOfMonthNumeric) + parseInt(paddingDaysStart)){
+      daySquare.classList.add("padding-end", "text-muted"); 
+      daySquare.innerText = i - (parseInt(lastDayOfMonthNumeric) + parseInt(paddingDaysStart))
     }
 
     calendar.appendChild(daySquare);
   }
 }
 
-function closeModal() {
-  eventTitleInput.classList.remove("error");
-  newEventModal.style.display = "none";
-  deleteEventModal.style.display = "none";
-  backDrop.style.display = "none";
-  eventTitleInput.value = "";
-  clicked = null;
-  load();
-}
 
-function saveEvent() {
-  if (eventTitleInput.value) {
-    eventTitleInput.classList.remove("error");
 
-    events.push({
-      date: clicked,
-      title: eventTitleInput.value,
-    });
 
-    localStorage.setItem("events", JSON.stringify(events));
-    closeModal();
-  } else {
-    eventTitleInput.classList.add("error");
-  }
-}
 
-function deleteEvent() {
-  events = events.filter((e) => e.date !== clicked);
-  localStorage.setItem("events", JSON.stringify(events));
-  closeModal();
-}
+
+
+
+ 
+ 
+  
 
 function initButtons() {
   document.getElementById("nextButton").addEventListener("click", () => {
@@ -141,13 +102,6 @@ function initButtons() {
     nav--;
     load();
   });
-
-  document.getElementById("saveButton").addEventListener("click", saveEvent);
-  document.getElementById("cancelButton").addEventListener("click", closeModal);
-  document
-    .getElementById("deleteButton")
-    .addEventListener("click", deleteEvent);
-  document.getElementById("closeButton").addEventListener("click", closeModal);
 }
 
 initButtons();
