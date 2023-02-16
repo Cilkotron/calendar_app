@@ -68,7 +68,7 @@ function load() {
 
   for (let i = 1; i <= paddingDaysStart + daysInMonth + paddingDaysEnd; i++) {
     const daySquare = document.createElement("div");
-    daySquare.classList.add("day", "d-flex", "flex-column", "justify-content-between", "m-1", "p-2", "cursor-pointer");
+    daySquare.classList.add("day", "d-flex", "flex-column", "justify-content-between", "align-items-center", "m-1", "p-1", "cursor-pointer");
   
 
     if (i > paddingDaysStart) {
