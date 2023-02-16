@@ -40,12 +40,21 @@ function load() {
     day: "numeric",
   });
 
-  const lastDayOfMonthNumeric = lasDayOfMonth.toLocaleDateString("en-us", {
+
+  const lastDayOfMonthNumeric = parseInt(lasDayOfMonth.toLocaleDateString("en-us", {
     day: "numeric",
-  });
+  }));
+ 
 
   
-  const paddingDaysStart = weekdays.indexOf(dateString.split(", ")[0]);
+  const paddingDaysStart = parseInt(weekdays.indexOf(dateString.split(", ")[0]));
+
+  let paddingDaysEnd 
+  if(paddingDaysStart >= 5 && lastDayOfMonthNumeric >= 30) {
+    paddingDaysEnd = 42 - (lastDayOfMonthNumeric + paddingDaysStart);
+  } else {
+    paddingDaysEnd = 35 - (lastDayOfMonthNumeric + paddingDaysStart);
+  }
 
   
   let lasDayOfReviousMonth = new Date(year, month, 0).getDate();
@@ -57,7 +66,7 @@ function load() {
   calendar.innerHTML = "";
 
 
-  for (let i = 1; i <= 35; i++) {
+  for (let i = 1; i <= paddingDaysStart + daysInMonth + paddingDaysEnd; i++) {
     const daySquare = document.createElement("div");
     daySquare.classList.add("day", "d-flex", "flex-column", "justify-content-between", "m-1", "p-2", "cursor-pointer");
   
@@ -72,9 +81,9 @@ function load() {
       daySquare.classList.add("padding", "text-muted");
       daySquare.innerText = lasDayOfReviousMonth - paddingDaysStart + i;
     }
-    if(i > parseInt(lastDayOfMonthNumeric) + parseInt(paddingDaysStart)){
+    if(i > lastDayOfMonthNumeric + paddingDaysStart){
       daySquare.classList.add("padding-end", "text-muted"); 
-      daySquare.innerText = i - (parseInt(lastDayOfMonthNumeric) + parseInt(paddingDaysStart))
+      daySquare.innerText = i - (lastDayOfMonthNumeric + paddingDaysStart);
     }
 
     calendar.appendChild(daySquare);
