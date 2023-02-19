@@ -1,8 +1,25 @@
 let nav = 0;
-let clicked = null;
-let events = localStorage.getItem("events")
-  ? JSON.parse(localStorage.getItem("events"))
-  : [];
+let events = [
+  {
+    name: "Monthly board meeting",
+    starts_at_local: '2023-02-15 12:00:00',
+    ends_at_local: '2023-02-15 13:00:00', 
+    type: "recurrent"
+  },
+  {
+    name: "AA meeting",
+    starts_at_local: '2023-02-15 16:00:00',
+    ends_at_local: '2023-02-15 17:00:00', 
+    type: "recurrent"
+
+  }, 
+  {
+    name: "Job fair",
+    starts_at_local: '2023-02-25 10:00:00',
+    ends_at_local: '2023-02-25 18:00:00', 
+    type: "single"
+  }
+]
 
 const calendar = document.getElementById("hg-calendar");
 const weekdays = [
@@ -49,6 +66,8 @@ function load() {
   
   const paddingDaysStart = parseInt(weekdays.indexOf(dateString.split(", ")[0]));
 
+ 
+
   let paddingDaysEnd 
   if(paddingDaysStart >= 5 && lastDayOfMonthNumeric >= 30) {
     paddingDaysEnd = 42 - (lastDayOfMonthNumeric + paddingDaysStart);
@@ -69,13 +88,27 @@ function load() {
   for (let i = 1; i <= paddingDaysStart + daysInMonth + paddingDaysEnd; i++) {
     const daySquare = document.createElement("div");
     daySquare.classList.add("day", "d-flex", "flex-column", "justify-content-between", "align-items-center", "m-1", "p-1", "cursor-pointer");
-  
+    
+    const dayString = `${month + 1}/${i - paddingDaysStart}/${year}`; 
+    let eventForDay 
+    if(events.length) {
+      eventForDay = events.find(e => new Date(e.starts_at_local).toLocaleDateString() === dayString);
+    }
+    
+
 
     if (i > paddingDaysStart) {
       daySquare.innerText = i - paddingDaysStart;
 
       if (i - paddingDaysStart === day && nav === 0) {
         daySquare.id = "currentDay";
+      }
+
+      if (eventForDay) {
+        const eventDiv = document.createElement('span');
+        eventDiv.classList.add("event", "justify-content-center", "position-absolute", "mt-5");
+        eventDiv.innerText = eventForDay.name;
+        daySquare.appendChild(eventDiv);
       }
     } else {
       daySquare.classList.add("padding", "text-muted");
