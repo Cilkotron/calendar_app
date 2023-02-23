@@ -107,8 +107,8 @@ function load() {
       "align-items-center",
       "m-1",
       "p-1",
-      "cursor-pointer", 
-      "text-white"
+      "cursor-pointer"
+     
     );
 
     const dayString = `${month + 1}/${i - paddingDaysStart}/${year}`;
@@ -136,7 +136,8 @@ function load() {
             "p-1",
             "m-1",
             "border",
-            "rounded-2"
+            "rounded-2",
+            "text-white"
           );
           eventDiv.innerText = e.name;
           eventDiv.style.backgroundColor = departments.find(d => d.id === e.department_id).color; 
