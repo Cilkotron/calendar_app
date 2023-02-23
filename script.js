@@ -31,7 +31,7 @@ let departments = [
   }, 
   {
     id: 3, 
-    color: '9aadaa'
+    color: '#9aadaa'
   },
   {
     id: 4,
@@ -107,7 +107,8 @@ function load() {
       "align-items-center",
       "m-1",
       "p-1",
-      "cursor-pointer"
+      "cursor-pointer", 
+      "text-white"
     );
 
     const dayString = `${month + 1}/${i - paddingDaysStart}/${year}`;
